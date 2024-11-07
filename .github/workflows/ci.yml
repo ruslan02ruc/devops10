@@ -24,6 +24,10 @@ jobs:
       - name: Build Docker image
         run: docker build -t my-app -f my-app/Dockerfile  my-app/
 
+      - name: Deploy to staging
+        if: github.ref == 'refs/heads/main'
+        run: docker-compose -f docker-compose.staging.yml up -d
+
       - name: Notify team
         run: |
           curl -X POST -H "Content-type: application/json" --data '{"text":"Deployment to staging successful!"}' "${{ secrets.SLACK_WEBHOOK_URL }}"
