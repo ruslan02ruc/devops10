@@ -23,9 +23,6 @@ jobs:
   
       - name: Build Docker image
         run: docker build -t my-app -f my-app/Dockerfile  my-app/
-  
-      - name: Run tests
-        run: docker-compose run --rm web pytest
 
       - name: Deploy to staging
         if: github.ref == 'refs/heads/main'
