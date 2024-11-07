@@ -22,7 +22,7 @@ jobs:
         uses: docker/setup-buildx-action@v1
   
       - name: Build Docker image
-        run: docker build -t my-app .
+        run: docker build -t time_printer .
   
       - name: Run tests
         run: docker-compose run --rm web pytest
