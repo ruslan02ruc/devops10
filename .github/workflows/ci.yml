@@ -13,23 +13,24 @@ jobs:
           – 5432:5432
         env:
           POSTGRES_PASSWORD: example
-
+          
     steps:
-    – name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    – name: Set up Docker
-      uses: docker/setup-buildx-action@v1
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v1
+  
+      - name: Build Docker image
+        run: docker build -t my-app .
+  
+      - name: Run tests
+        run: docker-compose run --rm web pytest
 
-    – name: Build Docker image
-      run: docker build -t my-app .
-
-    – name: Run tests
-      run: docker-compose run --rm web pytest
-
-    – name: Deploy to staging
-      if: github.ref == 'refs/heads/main'
-      run: docker-compose -f docker-compose.staging.yml up -d
-
-    – name: Notify team
-      run: curl -X POST -H 'Content-type: application/json' --data '{"text":"Deployment to staging successful!"}' ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Deploy to staging
+        if: github.ref == 'refs/heads/main'
+        run: docker-compose -f docker-compose.staging.yml up -d
+  
+      - name: Notify team
+        run: |
+          curl -X POST -H "Content-type: application/json" --data '{"text":"Deployment to staging successful!"}' "${{ secrets.SLACK_WEBHOOK_URL }}"
